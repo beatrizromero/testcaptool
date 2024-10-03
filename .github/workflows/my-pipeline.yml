@@ -1,0 +1,30 @@
+name: Convert File to TXT
+
+on:
+  workflow_dispatch:
+    inputs:
+      filePath:
+        description: 'Path to the input file'
+        required: true
+        default: 'default/path/to/file.txt'
+
+jobs:
+  convert_file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Convert file to TXT
+        run: |
+          inputFile="${{ github.event.inputs.filePath }}"
+          outputFile="${inputFile%.*}.txt"
+
+          if [ -f "$inputFile" ]; then
+            cp "$inputFile" "$outputFile"
+            echo "File converted to TXT: $outputFile"
+          else
+            echo "File does not exist: $inputFile"
+            exit 1
+          fi
